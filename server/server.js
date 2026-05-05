@@ -3,7 +3,6 @@ require("dotenv").config();
 
 const express = require("express");
 const mongoose = require("mongoose");
-const cors = require("cors");
 
 const authRoutes = require("./routes/authRoutes");
 const transactionRoutes = require("./routes/transactionRoutes");
@@ -11,14 +10,18 @@ const authMiddleware = require("./middleware/authMiddleware");
 
 const app = express();
 
-// ✅ FINAL CORS FIX (WORKS 100%)
-app.use(cors({
-  origin: "*", // allow all (fixes your issue instantly)
- 
-}));
+// 🔥 FINAL CORS FIX (manual headers — works everywhere)
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
-// ✅ handle preflight requests
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
 
+  next();
+});
 
 app.use(express.json());
 
@@ -35,7 +38,7 @@ app.get("/api/protected", authMiddleware, (req, res) => {
   res.json({ message: "You are authorized", user: req.user });
 });
 
-// DB Connection
+// DB connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => {
