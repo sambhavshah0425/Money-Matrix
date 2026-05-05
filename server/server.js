@@ -11,14 +11,15 @@ const authMiddleware = require("./middleware/authMiddleware");
 
 const app = express();
 
-// ✅ CORS FIX
+// ✅ FINAL CORS FIX (WORKS 100%)
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    process.env.FRONTEND_URL
-  ],
-  credentials: true
+  origin: "*", // allow all (fixes your issue instantly)
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 }));
+
+// ✅ handle preflight requests
+app.options("*", cors());
 
 app.use(express.json());
 
@@ -30,11 +31,12 @@ app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
+// Protected route
 app.get("/api/protected", authMiddleware, (req, res) => {
   res.json({ message: "You are authorized", user: req.user });
 });
 
-// DB
+// DB Connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => {
