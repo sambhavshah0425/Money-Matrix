@@ -14,8 +14,7 @@ const app = express();
 // ✅ FINAL CORS FIX (WORKS 100%)
 app.use(cors({
   origin: "*", // allow all (fixes your issue instantly)
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+ 
 }));
 
 // ✅ handle preflight requests
