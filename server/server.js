@@ -10,29 +10,20 @@ const authMiddleware = require("./middleware/authMiddleware");
 
 const app = express();
 
-// ✅ FINAL WORKING CORS (PRODUCTION SAFE)
-app.use((req, res, next) => {
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    "https://money-matrix-one.vercel.app"
-  );
+const cors = require("cors");
 
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, OPTIONS"
-  );
-
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization"
-  );
-
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-
-  next();
-});
+// ✅ FINAL WORKING CORS (Allows Vercel Preview URLs)
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || origin.includes("localhost") || origin.includes("vercel.app")) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
 app.use(express.json());
 
