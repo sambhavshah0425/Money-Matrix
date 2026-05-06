@@ -13,9 +13,9 @@ const app = express();
 // ✅ FINAL WORKING CORS (PRODUCTION SAFE)
 app.use((req, res, next) => {
   res.setHeader(
-  "Access-Control-Allow-Origin",
-  process.env.FRONTEND_URL
-);
+    "Access-Control-Allow-Origin",
+    "https://money-matrix-one.vercel.app"
+  );
 
   res.setHeader(
     "Access-Control-Allow-Methods",
